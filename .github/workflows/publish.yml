@@ -8,4 +8,4 @@ jobs:
     if: github.event.label.name == 'PUBLISH' || startsWith(github.event.label.name, 'PUBLISH_')
     runs-on: ubuntu-latest
     steps:
-      - run: echo 'it works'
+      - run: node build/index.js

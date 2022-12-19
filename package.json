@@ -4,10 +4,14 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build"
+    "build": "tsc && vite build && cp dist/index.js build/index.js"
+  },
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/github": "^5.0.0"
   },
   "devDependencies": {
+    "@types/node": "18.11.17",
     "typescript": "^4.9.3",
     "vite": "^4.0.0"
   }

@@ -1,23 +1,27 @@
-import './style.css'
-import typescriptLogo from './typescript.svg'
-import { setupCounter } from './counter'
+// import core from "@actions/core";
+import github from "@actions/github";
+export {};
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+function main() {
+  // const client = github.getOctokit(process.env.GITHUB_TOKEN!);
+  const issue = github.context.payload.issue;
+  if (!issue) {
+    throw new Error("This must be invoked in the `issue` events.");
+  }
+  const owner = issue.organization;
+  const repo = issue.repository;
+  console.log(
+    "💡 test",
+    JSON.stringify(
+      {
+        payload: github.context.payload,
+        owner,
+        repo,
+      },
+      null,
+      2
+    )
+  );
+}
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+main();
