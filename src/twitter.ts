@@ -1,6 +1,10 @@
 import { TwitterApi } from "twitter-api-v2";
 import { PostFunction, TwitterConfig } from "./types";
 
+export function cleanUpImageMarkdown(body: string) {
+  return body.replaceAll(/\!\[.*?\]\((.*?)\)/g, "$1");
+}
+
 export const postToTwitter: PostFunction<TwitterConfig> = async ({
   issue,
   config,
@@ -28,8 +32,11 @@ export const postToTwitter: PostFunction<TwitterConfig> = async ({
     accessSecret: String(process.env[`${prefix}TWITTER_ACCESS_TOKEN_SECRET`]),
   }).readWrite.v2;
 
-  const result = await twitterClient.tweet(issue.body!);
-  console.log("💡 result", JSON.stringify(result, null, 2));
-
-  return { success: true };
+  let body = cleanUpImageMarkdown(issue.body!);
+  const result = await twitterClient.tweet(body);
+  if (result?.data?.id) {
+    return { success: true };
+  } else {
+    return { error: JSON.stringify(result) };
+  }
 };

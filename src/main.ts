@@ -8,8 +8,6 @@ import config from "../config";
 import { postToTwitter } from "./twitter";
 import { postToMastodon } from "./mastodon";
 
-export {};
-
 const FUNCTION_MAP: Record<MediaType, PostFunction<any>> = {
   twitter: postToTwitter,
   mastodon: postToMastodon,
