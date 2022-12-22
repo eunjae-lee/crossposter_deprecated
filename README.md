@@ -73,7 +73,7 @@ You need
 <details>
 <summary>
 5. Setup the Mastodon token in your repository
-<summary>
+</summary>
 
 1. Go to your repository and follow this path
 
