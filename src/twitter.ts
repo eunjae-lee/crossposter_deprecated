@@ -39,7 +39,7 @@ export const postToTwitter: PostFunction<TwitterConfig> = async ({
   let body = cleanUpImageMarkdown(issue.body!);
   const postfixForTrimmedTweet = `\n\n${issueURL}`;
   const trimResult = trimTextForTwitter({
-    text: issue.body!,
+    text: body,
     maximumLength: 280,
     targetLengthAfterTrimming: 280 - postfixForTrimmedTweet.length,
   });

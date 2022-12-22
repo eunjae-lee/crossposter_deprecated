@@ -12,6 +12,7 @@
     "@actions/core": "^1.10.0",
     "@actions/github": "^5.0.0",
     "@types/twitter-text": "^3.1.4",
+    "masto": "^4.11.1",
     "twitter-api-v2": "^1.12.10",
     "twitter-text": "^3.1.0"
   },
