@@ -1,4 +1,4 @@
-# notes
+# crossposter
 
 This is a repository to cross-post texts across Twitter and Mastodon. If you create an issue and give `publish` label to it, GitHub Workflows automatically cross-posts it.
 
