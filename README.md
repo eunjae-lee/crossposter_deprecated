@@ -178,6 +178,12 @@ You need to pass all the secrets above to the process as environment variables. 
 
 This repository my get some updates or new feature. If you want it in your forked repository, check out this article: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork
 
+## Contribution
+
+If you have a question or a feature request, feel free to create an issue in this repository. Any PR is welcome, but I recommend you to discuss with me first before you spend too much time on it.
+
+한국분이시라면 한국어로 이슈 올리셔도 상관 없습니다.
+
 ## Reference
 
 - twitter-api-v2: https://github.com/plhery/node-twitter-api-v2
