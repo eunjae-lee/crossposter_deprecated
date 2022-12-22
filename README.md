@@ -2,15 +2,14 @@
 
 This is a repository to cross-post texts across Twitter and Mastodon. If you create an issue and give `publish` label to it, GitHub Workflows automatically cross-posts it.
 
-## Setup in a nutshell
+## Setup
 
 1. Fork this repository
-2. Get Twitter tokens
-3. Setup the Twitter tokens in your repository
-4. Get Mastodon token
-5. Setup the Mastodon token in your repository
 
-### Get Twitter tokens
+<details>
+<summary>
+2. Get Twitter tokens
+</summary>
 
 1. Go to https://developer.twitter.com/portal/dashboard
 
@@ -31,7 +30,12 @@ You need
 - `TWITTER_ACCESS_TOKEN_KEY`
 - `TWITTER_ACCESS_TOKEN_SECRET`
 
-### Setup the Twitter tokens in your repository
+</details>
+
+<details>
+<summary>
+3. Setup the Twitter tokens in your repository
+</summary>
 
 1. Go to your repository and follow this path
 
@@ -43,7 +47,12 @@ You need
 
 ![GitHub](./public/github-03.png)
 
-### Get Mastodon token
+</details>
+
+<details>
+<summary>
+4. Get Mastodon token
+</summary>
 
 1. Go to your Mastodon server and follow this path to create a new application
 
@@ -59,7 +68,12 @@ You need
 
 ![Mastodon](./public/mastodon-04.png)
 
-### Setup the Mastodon token in your repository
+</details>
+
+<details>
+<summary>
+5. Setup the Mastodon token in your repository
+<summary>
 
 1. Go to your repository and follow this path
 
@@ -71,7 +85,12 @@ You need
 
 ![GitHub](./public/mastodon-05.png)
 
-### Create an issue to cross-post
+</details>
+
+<details>
+<summary>
+6. Create an issue to cross-post
+</summary>
 
 1. Go to your Issues tab on your repository
 
@@ -82,6 +101,8 @@ You need
 ![Issues](./public/issue-01.png)
 
 3. voilà! It's done.
+
+</details>
 
 ## Reference
 
