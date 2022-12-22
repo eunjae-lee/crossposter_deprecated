@@ -19,7 +19,10 @@ export function trimText({
 }: TrimTextParams) {
   let trimmed = false;
   let result = text;
-  if (getLength(text) > maximumLength) {
+  if (
+    getLength(text) > maximumLength ||
+    getLength(text) > targetLengthAfterTrimming + getLength(ellipsisText)
+  ) {
     result =
       substring(text, targetLengthAfterTrimming - getLength(ellipsisText)) +
       ellipsisText;

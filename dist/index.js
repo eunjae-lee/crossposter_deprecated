@@ -38106,7 +38106,8 @@ var twitter_text_dist_default = /*#__PURE__*/__nccwpck_require__.n(twitter_text_
 function trimText({ text, maximumLength, ellipsisText = "…", targetLengthAfterTrimming = maximumLength, getLength = (text) => text.length, substring = (text, length) => text.substring(0, length), }) {
     let trimmed = false;
     let result = text;
-    if (getLength(text) > maximumLength) {
+    if (getLength(text) > maximumLength ||
+        getLength(text) > targetLengthAfterTrimming + getLength(ellipsisText)) {
         result =
             substring(text, targetLengthAfterTrimming - getLength(ellipsisText)) +
                 ellipsisText;

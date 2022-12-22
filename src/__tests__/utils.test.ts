@@ -21,6 +21,16 @@ describe("utils", () => {
       ).toEqual({ trimmed: true, text: "abcd…" });
     });
 
+    it("can have a text of length between targetLength... and maximumLength", () => {
+      expect(
+        trimText({
+          text: "abcdef",
+          maximumLength: 10,
+          targetLengthAfterTrimming: 4,
+        })
+      ).toEqual({ trimmed: true, text: "abc…" });
+    });
+
     it("can have a different ellipsis text", () => {
       expect(
         trimText({
