@@ -108,7 +108,66 @@ The title of issue isn't used for Twitter or Mastodon. So you can put anything l
 
 ## Configuration
 
+You can tweak the behavior by modifying `config.ts`.
 
+Its default config is like this:
+
+```typescript
+const config: Config = {
+  labels: {
+    publish: [{ type: "twitter" }, { type: "mastodon" }],
+  },
+};
+```
+
+You can leave it as-is if you're good with the functionality.
+
+<details>
+<summary>1. configuration per label (multi-pipelines) </summary>
+
+The default label that triggers the workflow is `publish`, but you can configure other labels that start with `publish_`.
+For example, you have two Twitter accounts, one for English and another one for Korean. And two Mastodon accounts as well.
+
+You can configure `publish_english` and `publish_korean`.
+
+```typescript
+const config: Config = {
+  labels: {
+    publish_english: [
+      { type: "twitter", env_var_prefix: "EN_" },
+      { type: "mastodon", env_var_prefix: "EN_" },
+    ],
+    publish_korean: [
+      { type: "twitter", env_var_prefix: "KO_" },
+      { type: "mastodon", env_var_prefix: "KO_" },
+    ],
+  },
+};
+```
+
+You might've noticed `env_var_prefix` above. When you're setting up more than one Twitter or Mastodon account, you need to name those tokens differently. That's what that prefix is for.
+
+Then, in this case, you need to add the following secrets to your GitHub repository:
+
+```
+KO_TWITTER_CONSUMER_KEY
+KO_TWITTER_CONSUMER_SECRET
+KO_TWITTER_ACCESS_TOKEN_KEY
+KO_TWITTER_ACCESS_TOKEN_SECRET
+EN_TWITTER_CONSUMER_KEY
+EN_TWITTER_CONSUMER_SECRET
+EN_TWITTER_ACCESS_TOKEN_KEY
+EN_TWITTER_ACCESS_TOKEN_SECRET
+
+KO_MASTODON_ACCESS_TOKEN
+KO_MASTODON_URL
+EN_MASTODON_ACCESS_TOKEN
+EN_MASTODON_URL
+```
+
+Unfortunately, you're not finished. You need to modify `.github/workflows/publish.yml`.
+You need to pass all the secrets above to the process as environment variables. If you're not sure what this means, create an issue in this repository to ask. I'll walk you through the configuration.
+</details>
 
 ## Reference
 
