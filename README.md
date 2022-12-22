@@ -98,11 +98,17 @@ You need
 
 2. Create an issue with a label `publish`. Or, you can create an issue first, and later add a label `publish` when you're ready to publish it.
 
+The title of issue isn't used for Twitter or Mastodon. So you can put anything like `untitled` there.
+
 ![Issues](./public/issue-01.png)
 
 3. voilà! It's done.
 
 </details>
+
+## Configuration
+
+
 
 ## Reference
 
