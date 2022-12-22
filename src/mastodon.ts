@@ -12,7 +12,7 @@ export const postToMastodon: PostFunction<MastodonConfig> = async ({
   [`${prefix}MASTODON_URL`, `${prefix}MASTODON_ACCESS_TOKEN`].forEach((key) => {
     if (!process.env[key]) {
       throw new Error(
-        `\`${key}\` is missing. Go to Settings > Secrets > Actions to add the token.`
+        `\`${key}\` is missing. Go to Settings > Secrets > Actions to add the token.\nMake sure you also have it in .github/workflows/publish.yml`
       );
     }
   });

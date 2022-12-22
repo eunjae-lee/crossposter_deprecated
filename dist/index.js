@@ -45925,7 +45925,7 @@ const postToMastodon = async ({ issue, issueURL, config, }) => {
     const prefix = config.env_var_prefix ?? "";
     [`${prefix}MASTODON_URL`, `${prefix}MASTODON_ACCESS_TOKEN`].forEach((key) => {
         if (!process.env[key]) {
-            throw new Error(`\`${key}\` is missing. Go to Settings > Secrets > Actions to add the token.`);
+            throw new Error(`\`${key}\` is missing. Go to Settings > Secrets > Actions to add the token.\nMake sure you also have it in .github/workflows/publish.yml`);
         }
     });
     let body = cleanUpImageMarkdown(issue.body);
