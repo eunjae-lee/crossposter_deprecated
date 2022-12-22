@@ -169,6 +169,10 @@ Unfortunately, you're not finished. You need to modify `.github/workflows/publis
 You need to pass all the secrets above to the process as environment variables. If you're not sure what this means, create an issue in this repository to ask. I'll walk you through the configuration.
 </details>
 
+## Update
+
+This repository my get some updates or new feature. If you want it in your forked repository, check out this article: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork
+
 ## Reference
 
 - twitter-api-v2: https://github.com/plhery/node-twitter-api-v2
