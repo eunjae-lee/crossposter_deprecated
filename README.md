@@ -110,6 +110,10 @@ The title of issue isn't used for Twitter or Mastodon. So you can put anything l
 
 You can tweak the behavior by modifying `config.ts`.
 
+<details>
+<summary>
+1. default configuration
+</summary>
 Its default config is like this:
 
 ```typescript
@@ -121,9 +125,10 @@ const config: Config = {
 ```
 
 You can leave it as-is if you're good with the functionality.
+</details>
 
 <details>
-<summary>1. configuration per label (multi-pipelines) </summary>
+<summary>2. configuration per label (multi-pipelines) </summary>
 
 The default label that triggers the workflow is `publish`, but you can configure other labels that start with `publish_`.
 For example, you have two Twitter accounts, one for English and another one for Korean. And two Mastodon accounts as well.
