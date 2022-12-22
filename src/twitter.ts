@@ -1,5 +1,8 @@
 import { TwitterApi } from "twitter-api-v2";
 import { PostFunction, TwitterConfig } from "./types";
+import { trimTextForTwitter } from "./utils";
+
+// TODO: https://github.com/twitter/twitter-text
 
 export function cleanUpImageMarkdown(body: string) {
   return body.replaceAll(/\!\[.*?\]\((.*?)\)/g, "$1");
@@ -7,6 +10,7 @@ export function cleanUpImageMarkdown(body: string) {
 
 export const postToTwitter: PostFunction<TwitterConfig> = async ({
   issue,
+  issueURL,
   config,
 }) => {
   const prefix = config.env_var_prefix ?? "";
@@ -33,6 +37,16 @@ export const postToTwitter: PostFunction<TwitterConfig> = async ({
   }).readWrite.v2;
 
   let body = cleanUpImageMarkdown(issue.body!);
+  const postfixForTrimmedTweet = `\n\n${issueURL}`;
+  const trimResult = trimTextForTwitter({
+    text: issue.body!,
+    maximumLength: 280,
+    targetLengthAfterTrimming: 280 - postfixForTrimmedTweet.length,
+  });
+  if (trimResult.trimmed) {
+    body = trimResult.text + postfixForTrimmedTweet;
+  }
+
   const result = await twitterClient.tweet(body);
   if (result?.data?.id) {
     return { success: true };

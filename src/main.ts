@@ -16,6 +16,11 @@ const FUNCTION_MAP: Record<MediaType, PostFunction<any>> = {
 async function main() {
   const issue = github.context.payload.issue!;
 
+  let issueURL = issue.html_url!;
+  if (config.urlTemplate) {
+    issueURL = config.urlTemplate(issue);
+  }
+
   if (issue.labels.find((label: any) => label.name === "PUBLISHED")) {
     core.setFailed("This issue is already published.");
     return;
@@ -36,7 +41,7 @@ async function main() {
         return Promise.resolve();
       }
 
-      return FUNCTION_MAP[media.type]({ issue, config: media });
+      return FUNCTION_MAP[media.type]({ issue, issueURL, config: media });
     })
   );
 

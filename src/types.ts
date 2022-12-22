@@ -9,12 +9,14 @@ export type TwitterConfig = {
 
 export type MastodonConfig = {
   type: "mastodon";
+  env_var_prefix?: string;
 };
 
 export type ConfigPerLabel = Array<TwitterConfig | MastodonConfig>;
 
 export type Config = {
   labels: Record<Label, ConfigPerLabel>;
+  urlTemplate?: (issue: Issue) => string;
 };
 
 // these imports are just for type definition
@@ -37,5 +39,6 @@ export type ActionsCore = {
 
 export type PostFunction<TConfig> = (params: {
   issue: Issue;
+  issueURL: string;
   config: TConfig;
 }) => Promise<{ success: true } | { error: string }>;
