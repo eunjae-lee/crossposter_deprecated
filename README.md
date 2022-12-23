@@ -174,6 +174,15 @@ Unfortunately, you're not finished. You need to modify `.github/workflows/publis
 You need to pass all the secrets above to the process as environment variables. If you're not sure what this means, create an issue in this repository to ask. I'll walk you through the configuration.
 </details>
 
+If you make any changes in the repository (including `config.ts`), you need to build it again.
+
+```sh
+yarn install
+yarn build
+```
+
+And commit the change to `dist/index.js`.
+
 ## Update
 
 This repository my get some updates or new feature. If you want it in your forked repository, check out this article: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork
