@@ -125,6 +125,7 @@ const config: Config = {
 ```
 
 You can leave it as-is if you're good with the functionality.
+
 </details>
 
 <details>
@@ -172,16 +173,8 @@ KO_MASTODON_URL
 
 Unfortunately, you're not finished. You need to modify `.github/workflows/publish.yml`.
 You need to pass all the secrets above to the process as environment variables. If you're not sure what this means, create an issue in this repository to ask. I'll walk you through the configuration.
+
 </details>
-
-If you make any changes in the repository (including `config.ts`), you need to build it again.
-
-```sh
-yarn install
-yarn build
-```
-
-And commit the change to `dist/index.js`.
 
 ## Update
 
