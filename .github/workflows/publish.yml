@@ -5,7 +5,7 @@ on:
 
 jobs:
   run_if_label_matches:
-    if: github.actor == 'eunjae-lee' && (github.event.label.name == 'publish' || github.event.label.name == 'PUBLISH' || startsWith(github.event.label.name, 'publish_') || startsWith(github.event.label.name, 'PUBLISH_'))
+    if: github.event.label.name == 'publish' || github.event.label.name == 'PUBLISH' || startsWith(github.event.label.name, 'publish_') || startsWith(github.event.label.name, 'PUBLISH_')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
