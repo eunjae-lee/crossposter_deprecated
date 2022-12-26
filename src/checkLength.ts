@@ -20,12 +20,14 @@ async function main() {
     repo: github.context.repo.repo,
     issue_number: issue.number,
     body: [
+      `## Checking the text length`,
       `${
-        twitterLength <= TWITTER_MAX_LENGTH ? "✅" : "🚨"
+        twitterLength <= TWITTER_MAX_LENGTH ? "✅" : "⚠️"
       } Twitter (${twitterLength}/${TWITTER_MAX_LENGTH})`,
       `${
-        normalLength <= MASTODON_MAX_LENGTH ? "✅" : "🚨"
+        normalLength <= MASTODON_MAX_LENGTH ? "✅" : "⚠️"
       } Mastodon (${normalLength}/${MASTODON_MAX_LENGTH})`,
+      `(If too long, the text will be trimmed.)`,
     ].join("\n\n"),
   });
 }
