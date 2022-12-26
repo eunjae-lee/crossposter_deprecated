@@ -2,6 +2,7 @@ import { PostFunction, MastodonConfig } from "./types";
 import { login } from "masto";
 import { cleanUpImageMarkdown } from "./twitter";
 import { trimText } from "./utils";
+import { MASTODON_MAX_LENGTH } from "./const";
 
 export const postToMastodon: PostFunction<MastodonConfig> = async ({
   issue,
@@ -21,8 +22,9 @@ export const postToMastodon: PostFunction<MastodonConfig> = async ({
   const postfixForTrimmedBody = `\n\n${issueURL}`;
   const trimResult = trimText({
     text: body,
-    maximumLength: 500,
-    targetLengthAfterTrimming: 500 - postfixForTrimmedBody.length,
+    maximumLength: MASTODON_MAX_LENGTH,
+    targetLengthAfterTrimming:
+      MASTODON_MAX_LENGTH - postfixForTrimmedBody.length,
   });
   if (trimResult.trimmed) {
     body = trimResult.text + postfixForTrimmedBody;

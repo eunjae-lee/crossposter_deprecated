@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "rm -rf dist && ncc build src/main.ts",
+    "build:check-length": "ncc build src/checkLength.ts --out dist/checkLength",
     "test": "jest src"
   },
   "dependencies": {

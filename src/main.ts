@@ -1,9 +1,5 @@
-import { ActionsCore, ActionsGitHub, MediaType, PostFunction } from "./types";
-// `@actions/*` must be `require`d. it didn't work with `import`.
-// There must be some issue with bundling.
-const core: ActionsCore = require("@actions/core");
-const github: ActionsGitHub = require("@actions/github");
-
+import { MediaType, PostFunction } from "./types";
+import { core, github } from "./github";
 import config from "../config";
 import { postToTwitter } from "./twitter";
 import { postToMastodon } from "./mastodon";
@@ -34,18 +30,30 @@ async function main() {
     return;
   }
 
+  let failed = false;
   const results = await Promise.all(
-    config.labels[labelName].map((media) => {
+    config.labels[labelName].map(async (media) => {
       if (!FUNCTION_MAP[media.type]) {
         core.setFailed(`Unknown type(${media.type}) found in the config.`);
         return Promise.resolve();
       }
 
-      return FUNCTION_MAP[media.type]({ issue, issueURL, config: media });
+      try {
+        return await FUNCTION_MAP[media.type]({
+          issue,
+          issueURL,
+          config: media,
+        });
+      } catch (err) {
+        failed = true;
+        core.setFailed((err as Error).message);
+      }
     })
   );
 
-  core.info(JSON.stringify(results, null, 2));
+  if (!failed) {
+    core.info(JSON.stringify(results, null, 2));
+  }
 }
 
 main();

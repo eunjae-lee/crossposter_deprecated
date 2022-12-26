@@ -1,4 +1,5 @@
 import { TwitterApi } from "twitter-api-v2";
+import { TWITTER_MAX_LENGTH } from "./const";
 import { PostFunction, TwitterConfig } from "./types";
 import { trimTextForTwitter } from "./utils";
 
@@ -40,8 +41,9 @@ export const postToTwitter: PostFunction<TwitterConfig> = async ({
   const postfixForTrimmedTweet = `\n\n${issueURL}`;
   const trimResult = trimTextForTwitter({
     text: body,
-    maximumLength: 280,
-    targetLengthAfterTrimming: 280 - postfixForTrimmedTweet.length,
+    maximumLength: TWITTER_MAX_LENGTH,
+    targetLengthAfterTrimming:
+      TWITTER_MAX_LENGTH - postfixForTrimmedTweet.length,
   });
   if (trimResult.trimmed) {
     body = trimResult.text + postfixForTrimmedTweet;
