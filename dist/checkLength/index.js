@@ -18142,6 +18142,121 @@ var dist_default = /*#__PURE__*/__nccwpck_require__.n(dist);
 ;// CONCATENATED MODULE: ./src/const.ts
 const TWITTER_MAX_LENGTH = 280;
 const MASTODON_MAX_LENGTH = 500;
+const IMAGE_EXTENSIONS = [
+    ".3dv",
+    ".ai",
+    ".amf",
+    ".art",
+    ".ase",
+    ".awg",
+    ".blp",
+    ".bmp",
+    ".bw",
+    ".cd5",
+    ".cdr",
+    ".cgm",
+    ".cit",
+    ".cmx",
+    ".cpt",
+    ".cr2",
+    ".cur",
+    ".cut",
+    ".dds",
+    ".dib",
+    ".djvu",
+    ".dxf",
+    ".e2d",
+    ".ecw",
+    ".egt",
+    ".emf",
+    ".eps",
+    ".exif",
+    ".fs",
+    ".gbr",
+    ".gif",
+    ".gpl",
+    ".grf",
+    ".hdp",
+    ".heic",
+    ".heif",
+    ".icns",
+    ".ico",
+    ".iff",
+    ".int",
+    ".inta",
+    ".jfif",
+    ".jng",
+    ".jp2",
+    ".jpeg",
+    ".jpg",
+    ".jps",
+    ".jxr",
+    ".lbm",
+    ".liff",
+    ".max",
+    ".miff",
+    ".mng",
+    ".msp",
+    ".nef",
+    ".nitf",
+    ".nrrd",
+    ".odg",
+    ".ota",
+    ".pam",
+    ".pbm",
+    ".pc1",
+    ".pc2",
+    ".pc3",
+    ".pcf",
+    ".pct",
+    ".pcx",
+    ".pdd",
+    ".pdn",
+    ".pgf",
+    ".pgm",
+    ".PI1",
+    ".PI2",
+    ".PI3",
+    ".pict",
+    ".png",
+    ".pnm",
+    ".pns",
+    ".ppm",
+    ".psb",
+    ".psd",
+    ".psp",
+    ".px",
+    ".pxm",
+    ".pxr",
+    ".qfx",
+    ".ras",
+    ".raw",
+    ".rgb",
+    ".rgba",
+    ".rle",
+    ".sct",
+    ".sgi",
+    ".sid",
+    ".stl",
+    ".sun",
+    ".svg",
+    ".sxd",
+    ".tga",
+    ".tif",
+    ".tiff",
+    ".v2d",
+    ".vnd",
+    ".vrml",
+    ".vtf",
+    ".wdp",
+    ".webp",
+    ".wmf",
+    ".x3d",
+    ".xar",
+    ".xbm",
+    ".xcf",
+    ".xpm",
+];
 
 ;// CONCATENATED MODULE: ./src/github.ts
 // `@actions/*` must be `require`d. it didn't work with `import`.
@@ -18149,7 +18264,76 @@ const MASTODON_MAX_LENGTH = 500;
 const core = __nccwpck_require__(2186);
 const github = __nccwpck_require__(5438);
 
+// EXTERNAL MODULE: external "path"
+var external_path_ = __nccwpck_require__(1017);
+;// CONCATENATED MODULE: ./src/utils.ts
+
+
+
+function trimText({ text, maximumLength, ellipsisText = "…", targetLengthAfterTrimming = maximumLength, getLength = normalGetLength, substring = normalSubstring, }) {
+    let trimmed = false;
+    let result = text;
+    if (getLength(text) > maximumLength ||
+        getLength(text) > targetLengthAfterTrimming + getLength(ellipsisText)) {
+        result =
+            substring(text, targetLengthAfterTrimming - getLength(ellipsisText)) +
+                ellipsisText;
+        trimmed = true;
+    }
+    return { trimmed, text: result };
+}
+const normalGetLength = (text) => text.length;
+const normalSubstring = (text, length) => text.substring(0, length);
+function substringForTwitter(text, targetLength) {
+    // I know binary search is much better than this, but I don't care.
+    // But I fear that someone might come and yell at me about this code.
+    // PR is welcome.
+    for (let i = 1; i < text.length - 1; i++) {
+        const substr = text.substring(0, i);
+        const weightedLength = twitter.parseTweet(substr).weightedLength;
+        if (weightedLength === targetLength) {
+            return substr;
+        }
+        else if (weightedLength > targetLength) {
+            return text.substring(0, i - 1);
+        }
+    }
+    return text;
+}
+const getLengthForTwitter = (text) => twitter.parseTweet(text).weightedLength;
+function trimTextForTwitter({ text, maximumLength, ellipsisText = "…", targetLengthAfterTrimming = maximumLength, getLength = getLengthForTwitter, substring = substringForTwitter, }) {
+    return trimText({
+        text,
+        maximumLength,
+        ellipsisText,
+        targetLengthAfterTrimming,
+        getLength,
+        substring,
+    });
+}
+function hasImage(body) {
+    const imageMatch = body.match(/!\[.+?\]\((.+?)\)/);
+    return Boolean(imageMatch?.[1] && IMAGE_EXTENSIONS.includes((0,external_path_.extname)(imageMatch?.[1])));
+}
+function cleanUpImageMarkdown(body) {
+    return body.replaceAll(/\!\[.*?\]\((.*?)\)/g, "$1");
+}
+function trimAndAttachURL({ body, issueURL, maximumLength, getLength, trimmer, substring, }) {
+    let plainText = cleanUpImageMarkdown(body);
+    const postfix = `\n\n${issueURL}`;
+    const needPostfix = hasImage(body) || getLength(plainText) > maximumLength;
+    const result = trimmer({
+        text: plainText,
+        maximumLength,
+        targetLengthAfterTrimming: maximumLength - (needPostfix ? postfix.length : 0),
+        getLength,
+        substring,
+    });
+    return result.text + (needPostfix ? postfix : "");
+}
+
 ;// CONCATENATED MODULE: ./src/checkLength.ts
+
 
 
 
@@ -18167,10 +18351,20 @@ async function main() {
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
         issue_number: issue.number,
-        body: [
-            `${twitterLength <= TWITTER_MAX_LENGTH ? "✅" : "🚨"} Twitter (${twitterLength}/${TWITTER_MAX_LENGTH})`,
-            `${normalLength <= MASTODON_MAX_LENGTH ? "✅" : "🚨"} Mastodon (${normalLength}/${MASTODON_MAX_LENGTH})`,
-        ].join("\n\n"),
+        body: hasImage(issue.body)
+            ? [
+                `🔗 The link to this issue is prepended because the note includes image(s).`,
+            ].join("\n\n")
+            : [
+                (twitterLength <= TWITTER_MAX_LENGTH
+                    ? "* [Twitter] It fits in a tweet!"
+                    : "* [Twitter] It will be posted with the link.") +
+                    ` (${twitterLength}/${TWITTER_MAX_LENGTH})`,
+                (normalLength <= MASTODON_MAX_LENGTH
+                    ? `* [Mastodon] It fits in a toot!`
+                    : `* [Mastodon] It will be posted with the link.`) +
+                    ` (${normalLength}/${MASTODON_MAX_LENGTH})`,
+            ].join("\n\n"),
     });
 }
 main();
