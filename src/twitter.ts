@@ -1,13 +1,14 @@
 import { TwitterApi } from "twitter-api-v2";
 import { TWITTER_MAX_LENGTH } from "./const";
 import { PostFunction, TwitterConfig } from "./types";
-import { trimTextForTwitter } from "./utils";
+import {
+  getLengthForTwitter,
+  substringForTwitter,
+  trimAndAttachURL,
+  trimTextForTwitter,
+} from "./utils";
 
 // TODO: https://github.com/twitter/twitter-text
-
-export function cleanUpImageMarkdown(body: string) {
-  return body.replaceAll(/\!\[.*?\]\((.*?)\)/g, "$1");
-}
 
 export const postToTwitter: PostFunction<TwitterConfig> = async ({
   issue,
@@ -37,17 +38,14 @@ export const postToTwitter: PostFunction<TwitterConfig> = async ({
     accessSecret: String(process.env[`${prefix}TWITTER_ACCESS_TOKEN_SECRET`]),
   }).readWrite.v2;
 
-  let body = cleanUpImageMarkdown(issue.body!);
-  const postfixForTrimmedTweet = `\n\n${issueURL}`;
-  const trimResult = trimTextForTwitter({
-    text: body,
+  const body = trimAndAttachURL({
+    body: issue.body!,
+    issueURL,
+    getLength: getLengthForTwitter,
     maximumLength: TWITTER_MAX_LENGTH,
-    targetLengthAfterTrimming:
-      TWITTER_MAX_LENGTH - postfixForTrimmedTweet.length,
+    substring: substringForTwitter,
+    trimmer: trimTextForTwitter,
   });
-  if (trimResult.trimmed) {
-    body = trimResult.text + postfixForTrimmedTweet;
-  }
 
   const result = await twitterClient.tweet(body);
   if (result?.data?.id) {

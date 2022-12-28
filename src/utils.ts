@@ -1,12 +1,22 @@
 import twitter from "twitter-text";
+import { extname } from "path";
+import { IMAGE_EXTENSIONS } from "./const";
+
+type GetLength = (text: string) => number;
+type Substring = (text: string, length: number) => string;
 
 type TrimTextParams = {
   text: string;
   maximumLength: number;
   ellipsisText?: string;
   targetLengthAfterTrimming?: number;
-  getLength?: (text: string) => number;
-  substring?: (text: string, length: number) => string;
+  getLength?: GetLength;
+  substring?: Substring;
+};
+
+type TextTrimmer = (params: TrimTextParams) => {
+  trimmed: boolean;
+  text: string;
 };
 
 export function trimText({
@@ -14,8 +24,8 @@ export function trimText({
   maximumLength,
   ellipsisText = "…",
   targetLengthAfterTrimming = maximumLength,
-  getLength = (text) => text.length,
-  substring = (text, length) => text.substring(0, length),
+  getLength = normalGetLength,
+  substring = normalSubstring,
 }: TrimTextParams) {
   let trimmed = false;
   let result = text;
@@ -30,6 +40,11 @@ export function trimText({
   }
   return { trimmed, text: result };
 }
+
+export const normalGetLength = (text: string) => text.length;
+
+export const normalSubstring = (text: string, length: number) =>
+  text.substring(0, length);
 
 export function substringForTwitter(text: string, targetLength: number) {
   // I know binary search is much better than this, but I don't care.
@@ -47,12 +62,15 @@ export function substringForTwitter(text: string, targetLength: number) {
   return text;
 }
 
+export const getLengthForTwitter = (text: string) =>
+  twitter.parseTweet(text).weightedLength;
+
 export function trimTextForTwitter({
   text,
   maximumLength,
   ellipsisText = "…",
   targetLengthAfterTrimming = maximumLength,
-  getLength = (text) => twitter.parseTweet(text).weightedLength,
+  getLength = getLengthForTwitter,
   substring = substringForTwitter,
 }: TrimTextParams) {
   return trimText({
@@ -63,4 +81,44 @@ export function trimTextForTwitter({
     getLength,
     substring,
   });
+}
+
+export function hasImage(body: string) {
+  const imageMatch = body.match(/!\[.+?\]\((.+?)\)/);
+  return Boolean(
+    imageMatch?.[1] && IMAGE_EXTENSIONS.includes(extname(imageMatch?.[1]))
+  );
+}
+
+export function cleanUpImageMarkdown(body: string) {
+  return body.replaceAll(/\!\[.*?\]\((.*?)\)/g, "$1");
+}
+
+export function trimAndAttachURL({
+  body,
+  issueURL,
+  maximumLength,
+  getLength,
+  trimmer,
+  substring,
+}: {
+  body: string;
+  issueURL: string;
+  maximumLength: number;
+  getLength: GetLength;
+  trimmer: TextTrimmer;
+  substring: Substring;
+}) {
+  let plainText = cleanUpImageMarkdown(body);
+  const postfix = `\n\n${issueURL}`;
+  const needPostfix = hasImage(body) || getLength(plainText) > maximumLength;
+  const result = trimmer({
+    text: plainText,
+    maximumLength,
+    targetLengthAfterTrimming:
+      maximumLength - (needPostfix ? postfix.length : 0),
+    getLength,
+    substring,
+  });
+  return result.text + (needPostfix ? postfix : "");
 }

@@ -1,7 +1,11 @@
 import { PostFunction, MastodonConfig } from "./types";
 import { login } from "masto";
-import { cleanUpImageMarkdown } from "./twitter";
-import { trimText } from "./utils";
+import {
+  normalGetLength,
+  normalSubstring,
+  trimAndAttachURL,
+  trimText,
+} from "./utils";
 import { MASTODON_MAX_LENGTH } from "./const";
 
 export const postToMastodon: PostFunction<MastodonConfig> = async ({
@@ -18,17 +22,14 @@ export const postToMastodon: PostFunction<MastodonConfig> = async ({
     }
   });
 
-  let body = cleanUpImageMarkdown(issue.body!);
-  const postfixForTrimmedBody = `\n\n${issueURL}`;
-  const trimResult = trimText({
-    text: body,
+  const body = trimAndAttachURL({
+    body: issue.body!,
+    issueURL,
+    getLength: normalGetLength,
     maximumLength: MASTODON_MAX_LENGTH,
-    targetLengthAfterTrimming:
-      MASTODON_MAX_LENGTH - postfixForTrimmedBody.length,
+    substring: normalSubstring,
+    trimmer: trimText,
   });
-  if (trimResult.trimmed) {
-    body = trimResult.text + postfixForTrimmedBody;
-  }
 
   const masto = await login({
     url: String(process.env[`${prefix}MASTODON_URL`]),

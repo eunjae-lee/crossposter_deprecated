@@ -1,4 +1,4 @@
-import { cleanUpImageMarkdown } from "../twitter";
+import { cleanUpImageMarkdown } from "../utils";
 
 describe("twitter", () => {
   describe("cleanUpImageMarkdown", () => {

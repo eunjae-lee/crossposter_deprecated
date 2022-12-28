@@ -1,4 +1,9 @@
-import { substringForTwitter, trimText, trimTextForTwitter } from "../utils";
+import {
+  hasImage,
+  substringForTwitter,
+  trimText,
+  trimTextForTwitter,
+} from "../utils";
 
 describe("utils", () => {
   describe("trimText", () => {
@@ -95,6 +100,26 @@ describe("utils", () => {
           targetLengthAfterTrimming: 6,
         })
       ).toEqual({ trimmed: true, text: "가나…" });
+    });
+  });
+
+  describe("hasImage", () => {
+    it("returns false if there is no image", () => {
+      expect(hasImage("hello")).toEqual(false);
+    });
+
+    it("returns true if there is image", () => {
+      expect(
+        hasImage("hello\nhere is ![image](./image.png) <- my image!")
+      ).toEqual(true);
+    });
+
+    it("returns true for those with image extensions", () => {
+      expect(hasImage("![image](./image.png)")).toEqual(true);
+      expect(hasImage("![image](./image.jpg)")).toEqual(true);
+      expect(hasImage("![image](./image.jpeg)")).toEqual(true);
+      expect(hasImage("![image](./image.gif)")).toEqual(true);
+      expect(hasImage("![image](./image.mp4)")).toEqual(false);
     });
   });
 });
