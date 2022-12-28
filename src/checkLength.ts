@@ -22,7 +22,7 @@ async function main() {
     issue_number: issue.number,
     body: hasImage(issue.body!)
       ? [
-          `🔗 The link to this issue is prepended because the note includes image(s).`,
+          `🔗 The link to this issue will be prepended because the note includes image(s).`,
         ].join("\n\n")
       : [
           (twitterLength <= TWITTER_MAX_LENGTH
